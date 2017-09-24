@@ -36,11 +36,19 @@ public class DataGenerator {
 
 		for (int i = 0; i < values.length; i++) {
 			double u = Math.random() * max;
-			values[i] = (int) (M * Math.log(1 - u) / (-2));
 
-			System.out.println(values[i]);
+			values[i] = (int) (-1 - log2(1 - u));
+
+			if (values[i] > 10) {
+			//	System.out.println(values[i]);
+			}
 		}
 
 		return values;
 	}
+
+	public static double log2(double n) {
+		return (Math.log(n) / Math.log(2));
+	}
+
 }

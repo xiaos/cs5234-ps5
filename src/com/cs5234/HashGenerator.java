@@ -14,7 +14,7 @@ public class HashGenerator {
 		this.B = B;
 
 		// prime p larger than M
-		p = 2 * M;
+		p = 50 * M;
 
 		a = new int[A];
 		b = new int[A];
