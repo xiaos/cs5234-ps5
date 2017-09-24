@@ -25,7 +25,8 @@ public class Main {
 	}
 
 	public void test() {
-		int[] data = dataGenerator.uniform();
+//		int[] data = dataGenerator.uniform();
+		int[] data = dataGenerator.exponential();
 
 		Map<Integer, Integer> algo1Results = algo1(data);
 		Map<Integer, Integer> algo2Results = algo2(data);
