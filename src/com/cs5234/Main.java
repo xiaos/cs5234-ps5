@@ -8,43 +8,56 @@ public class Main {
 		new Main().test();
 	}
 
-	private static final int N = 1000000;
-	private static final int M = 300;
+	private static int N = 1000000;
+	private static int M = 200;
 
-	private static final int A = 100;
-	private static final int B = 400;
+	private static final int A = 4;
+	private static final int B = 40;
+
+	private static final float DELTA = 0.05f;
 
 	private DataGenerator dataGenerator;
 	private HashGenerator hashGenerator;
 
 	public Main() {
+		// 13238
 
-		dataGenerator = new DataGenerator(N, M);
-		hashGenerator = new HashGenerator(A, B, M);
 	}
 
 	public void test() {
-		//int[] data = dataGenerator.uniform();
-		 int[] data = dataGenerator.exponential();
+		// int[] data = dataGenerator.book();
+		// int[] data = dataGenerator.exponential();
+		N = 105197;
+		M = 13739;
 
+		dataGenerator = new DataGenerator(N, M);
+		hashGenerator = new HashGenerator(A, B, M);
+
+		int[] data = dataGenerator.book();
 		int[][] counters = process(data);
-
 		int[] algo1Results = algo1(counters);
-		int[] algo2Results = algo2(counters);
-
 		int[] results = count(data);
+		compareResults("Algo1", algo1Results, results);
 
-		compareResults(algo1Results, results);
-		compareResults(algo2Results, results);
+		data = dataGenerator.book();
+		counters = process(data);
+		int[] algo2Results = algo2(counters);
+		results = count(data);
+		compareResults("Algo2", algo2Results, results);
+
 	}
 
 	private int[][] process(int[] data) {
 		int[][] counters = new int[A][B];
 
-		for (int i = 0; i < data.length; i++) {
-			for (int j = 0; j < A; j++) {
-				int hashValue = hashGenerator.hash(j, data[i]);
-				counters[j][hashValue]++;
+		// i -< [0, A-1], j -< [0, B-1]
+		// When we see element x in the stream, then for all i -< [0, A-1], we
+		// will increment the counter C(i; hi(x))
+		for (int indexJ = 0; indexJ < data.length; indexJ++) {
+			int x = data[indexJ];
+			for (int i = 0; i < A; i++) {
+				int j = hashGenerator.hash(i, x);
+				counters[i][j]++;
 			}
 		}
 
@@ -121,17 +134,20 @@ public class Main {
 		return result;
 	}
 
-	private void compareResults(int[] algoResults, int[] results) {
-		System.out.println("====================================================");
+	private void compareResults(String algo, int[] algoResults, int[] results) {
+		System.out.println("======================== " + algo + " ==========================");
+		System.out.println("N:" + N + " M:" + M + " DELTA:" + DELTA);
+		System.out.println("A:" + A + " B:" + B);
 		int error = 0;
 
 		for (int i = 0; i < M; i++) {
-			// System.out.println(i + " : " + algoResults[i] + " : " +
-			// results[i]);
-			error += Math.abs(algoResults[i] - results[i]);
+			if (Math.abs(algoResults[i] - results[i]) > N * DELTA) {
+				error += 1;
+			}
 		}
 
 		System.out.println("Error:" + error);
+		System.out.println();
 	}
 
 }
